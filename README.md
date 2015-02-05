@@ -1,2 +1,4 @@
-# metrochrome
-Explore colors at the command line
+metrochrome
+===========
+
+Explore colors at the command line.
