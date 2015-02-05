@@ -4,5 +4,5 @@ Explore colors from the command line. For all you artists and designers who are 
 
 Usage
 -----
-`python ./metrochrome`
+`python ./metrochrome.py`
 
