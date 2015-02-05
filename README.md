@@ -1,10 +1,12 @@
 metrochrome
 ===========
-Explore colors from the command line.
+Explore colors at the command line.
 
-For artists and designers who are also command line enthusiasts.
+For for command line fiends who need to make some colorful art.
 
 Usage
 -----
-`python ./metrochrome.py`
-
+To print help...
+`python ./metrochrome.py -help`
+OR
+`python ./metrochrome.py -h`
