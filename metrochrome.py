@@ -11,15 +11,38 @@
 import sys
 
 def printHelp():
-    print("Printing help...")
+    print("""
+metrochrome.py - a command line tool for exploring color
+
+++ Convert color representations from one color space to another: RGB, RGB (hexadecimal), CMYK, etc.
+++ Find variations on a color tint, hue, shade 
+
+    Usage Options 
+--------------------------------
+
+* Display this help screen *
+    metrochrome.py -help   OR   metrochrome.py -h
+
+* Convert color space *
+    metrochrome.py <in_color_space> <in_color> <out_color_space>
+
+    color space flags:
+    -rgb = RGB color space written as three numbers 0-255 separted by spaces
+    -rgbh = RGB in hexadecimal format with a leading hash mark (e.g. #00FF30)
+    -cmyk = CMYK color space 4 comma separated values 0 to 1 written between parenthesis such as (0, 1, 0.955, 0.827)
+
+    examples:
+    metrochrome.py -rgb 0 0 0 -cmyk        # converts RGB to CMYK and prints (0, 0, 0, 1)
+    metrochrome.py -rgb 255 255 255 -rgbh  # converts RGB to hexadecimal and prints #FFFFFF
+    metrochrome.py -cmyk (0, 1, 0.955, 0.827) -rgb  # converts CMYK to RGB and prints #FFFFFF
+""")
 
 def printUnrec():
-    print("Ambiguous input... Run 'python metrochrome.py -help' to display help.")
+    print("Ambiguous input.\nRun 'python metrochrome.py -help' to display help.")
 
 def RGB_to_RGBhex(red, green, blue):
     total = red*65536 + green*256 + blue
-    #return "#" + str(hex(total))
-    return str(hex(total))
+    return "#%0.6X" % total
 
 def RGB_to_CMYK(red, green, blue):
     redRatio = red / 255.0
@@ -40,7 +63,7 @@ def RGB_to_CMYK(red, green, blue):
     return "(%.3g, %.3g, %.3g, %.3g)" % (cyan, magenta, yellow, key)
 
 def RGB_to_CMYKpercent(red, green, blue):
-    return "RGB_to_CMYKpercent(): not implimented yet
+    return "RGB_to_CMYKpercent(): not implimented yet"
  
 def RGBhex_to_RGB():
     return "RGBhex_to_RGB(): not implimented yet"
@@ -61,13 +84,13 @@ def main():
     if len(sys.argv) == 2 and (sys.argv[1] == "-h" or sys.argv[1] == "-help"):
         printHelp()
 
-    if len(sys.argv) == 6 and sys.argv[1] == "-rgb":
+    elif len(sys.argv) == 6 and sys.argv[1] == "-rgb":
         if sys.argv[2].isdigit() and sys.argv[3].isdigit() and sys.argv[4].isdigit():
             red = int(sys.argv[2])
             green = int(sys.argv[3])
             blue = int(sys.argv[4])
 
-            # *** Temporary error checking should be handled as a class
+            # *** Temporary error checking below. Should be handled as a class
             if red > 255:
                 red = 255
             if red < 0:
@@ -89,8 +112,8 @@ def main():
                 printUnrec()
         else:
             printUnrec()
-    #else:
-    #    printUnrec()
+    else:
+        printUnrec()
 
 if __name__ == "__main__":
     main()
