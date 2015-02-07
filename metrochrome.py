@@ -10,6 +10,31 @@
 
 import sys
 
+class RgbValue:
+    """A red, green, or blue value as an integer 0 through 255"""
+    def __init__(self, inValue):
+        if isinstance(inValue, int):
+            self.value = inValue
+        elif isinstance(inValue, str) and inValue.isdigit():
+            self.value = int(inValue)
+        else:
+            # *** Should actually raise an exception
+            self.value = 255
+
+        # *** These should also raise exceptions instead of reasigning the values
+        if self.value < 0:
+            self.value = 0
+        elif self.value > 255:
+            self.value = 255
+
+class RgbColor:
+    """A color represented in RGB color space by RgbValues of red green and blue"""
+    def __init__(self, red, green, blue):
+        # *** Should check the exceptions of the RgbValues as it trys to create them
+        self.r = RgbValue(red)
+        self.g = RgbValue(green)
+        self.b = RgbValue(blue)
+
 def printHelp():
     print("""
 metrochrome.py - a command line tool for exploring color
@@ -29,7 +54,8 @@ metrochrome.py - a command line tool for exploring color
     color space flags:
     -rgb = RGB color space written as three numbers 0-255 separted by spaces
     -rgbh = RGB in hexadecimal format with a leading hash mark (e.g. #00FF30)
-    -cmyk = CMYK color space 4 comma separated values 0 to 1 written between parenthesis such as (0, 1, 0.955, 0.827)
+    -cmyk = CMYK color space 4 comma separated ratio values 0 to 1 written between parenthesis such as (0, 1, 0.955, 0.827)
+    -cmykp = CMYK in percent format 4 space separated percent values 0 to 100 such as 0 100 95.5 82.7
 
     examples:
     metrochrome.py -rgb 0 0 0 -cmyk        # converts RGB to CMYK and prints (0, 0, 0, 1)
@@ -38,10 +64,12 @@ metrochrome.py - a command line tool for exploring color
 """)
 
 def printUnrec():
+    """If the inputs are unusable explain how to print the help screen"""
     print("Ambiguous input.\nRun 'python metrochrome.py -help' to display help.")
 
 def RGB_to_RGBhex(red, green, blue):
     total = red*65536 + green*256 + blue
+    # *** Each color space should have an as str function
     return "#%0.6X" % total
 
 def RGB_to_CMYK(red, green, blue):
@@ -60,6 +88,7 @@ def RGB_to_CMYK(red, green, blue):
         magenta = (1.0 - greenRatio - key) / (1.0 - key)
         yellow = (1.0 - blueRatio - key) / (1.0 - key)
 
+    # *** Each color space should have an as str function
     return "(%.3g, %.3g, %.3g, %.3g)" % (cyan, magenta, yellow, key)
 
 def RGB_to_CMYKpercent(red, green, blue):
@@ -85,31 +114,15 @@ def main():
         printHelp()
 
     elif len(sys.argv) == 6 and sys.argv[1] == "-rgb":
-        if sys.argv[2].isdigit() and sys.argv[3].isdigit() and sys.argv[4].isdigit():
-            red = int(sys.argv[2])
-            green = int(sys.argv[3])
-            blue = int(sys.argv[4])
+        # *** Should actually use RgbColor class build from RgbValue class and use exception handling
+        red = RgbValue(sys.argv[2])
+        green = RgbValue(sys.argv[3])
+        blue = RgbValue(sys.argv[4])
 
-            # *** Temporary error checking below. Should be handled as a class
-            if red > 255:
-                red = 255
-            if red < 0:
-                red = 0
-            if green > 255:
-                green = 255
-            if green < 0:
-                green = 0
-            if blue > 255:
-                blue = 255
-            if blue < 0:
-                blue = 0
-
-            if sys.argv[5] == "-rgbh":
-                print(RGB_to_RGBhex(red, green, blue))
-            elif sys.argv[5] == "-cmyk":
-                print(RGB_to_CMYK(red, green, blue))
-            else:
-                printUnrec()
+        if sys.argv[5] == "-rgbh":
+            print(RGB_to_RGBhex(red.value, green.value, blue.value))
+        elif sys.argv[5] == "-cmyk":
+            print(RGB_to_CMYK(red.value, green.value, blue.value))
         else:
             printUnrec()
     else:
