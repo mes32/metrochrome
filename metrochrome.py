@@ -10,6 +10,12 @@
 
 import sys
 
+class InvalidColorError(Exception):
+    def __init__(self):
+        self.value = "Invalid color error"
+    def __str__(self):
+        return repr(self.value)
+
 class RgbValue:
     """A red, green, or blue value as an integer 0 through 255"""
     def __init__(self, inValue):
@@ -18,22 +24,17 @@ class RgbValue:
         elif isinstance(inValue, str) and inValue.isdigit():
             self.value = int(inValue)
         else:
-            # *** Should actually raise an exception
-            self.value = 255
+            raise InvalidColorError()
 
-        # *** These should also raise exceptions instead of reasigning the values
-        if self.value < 0:
-            self.value = 0
-        elif self.value > 255:
-            self.value = 255
+        if self.value < 0 or self.value > 255:
+            raise InvalidColorError()
 
 class RgbColor:
     """A color represented in RGB color space by RgbValues of red green and blue"""
     def __init__(self, red, green, blue):
-        # *** Should check the exceptions of the RgbValues as it trys to create them
-        self.r = RgbValue(red)
-        self.g = RgbValue(green)
-        self.b = RgbValue(blue)
+        self.red = RgbValue(red).value
+        self.green = RgbValue(green).value
+        self.blue = RgbValue(blue).value
 
 def printHelp():
     print("""
@@ -63,19 +64,20 @@ metrochrome.py - a command line tool for exploring color
     metrochrome.py -cmyk (0, 1, 0.955, 0.827) -rgb  # converts CMYK to RGB and prints #FFFFFF
 """)
 
-def printUnrec():
+def exitWithError():
     """If the inputs are unusable explain how to print the help screen"""
-    print("Ambiguous input.\nRun 'python metrochrome.py -help' to display help.")
+    print("Unusable parameters...\nRun 'python metrochrome.py -help' to display the help screen.")
+    sys.exit(1)
 
-def RGB_to_RGBhex(red, green, blue):
-    total = red*65536 + green*256 + blue
-    # *** Each color space should have an as str function
+def RGB_to_RGBhex(inputRgb):
+    total = inputRgb.red*65536 + inputRgb.green*256 + inputRgb.blue
+    # *** Each color space should have an as str function?
     return "#%0.6X" % total
 
-def RGB_to_CMYK(red, green, blue):
-    redRatio = red / 255.0
-    greenRatio = green / 255.0
-    blueRatio = blue / 255.0
+def RGB_to_CMYK(inputRgb):
+    redRatio = inputRgb.red / 255.0
+    greenRatio = inputRgb.green / 255.0
+    blueRatio = inputRgb.blue / 255.0
 
     key = 1.0 - max(redRatio, greenRatio, blueRatio)
 
@@ -108,25 +110,25 @@ def CMYK_to_RGBhex():
 
 def main():
 
-    print("argv: " + str(sys.argv))
+    #print("argv: " + str(sys.argv))
 
     if len(sys.argv) == 2 and (sys.argv[1] == "-h" or sys.argv[1] == "-help"):
         printHelp()
 
     elif len(sys.argv) == 6 and sys.argv[1] == "-rgb":
-        # *** Should actually use RgbColor class build from RgbValue class and use exception handling
-        red = RgbValue(sys.argv[2])
-        green = RgbValue(sys.argv[3])
-        blue = RgbValue(sys.argv[4])
+        try:
+            rgb = RgbColor(sys.argv[2], sys.argv[3], sys.argv[4])
+        except InvalidColorError:
+            exitWithError()
 
         if sys.argv[5] == "-rgbh":
-            print(RGB_to_RGBhex(red.value, green.value, blue.value))
+            print(RGB_to_RGBhex(rgb))
         elif sys.argv[5] == "-cmyk":
-            print(RGB_to_CMYK(red.value, green.value, blue.value))
+            print(RGB_to_CMYK(rgb))
         else:
-            printUnrec()
+            exitWithError()
     else:
-        printUnrec()
+        exitWithError()
 
 if __name__ == "__main__":
     main()
