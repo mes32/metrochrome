@@ -2,11 +2,18 @@ metrochrome
 ===========
 Explore colors at the command line.
 
-For for command line fiends who need to make some colorful art.
+For for command line fiends who also want to make colorful art.
 
 Usage
 -----
-To print help...
+To print help screen run:
+
 `python ./metrochrome.py -help`
-OR
-`python ./metrochrome.py -h`
+
+To convert colors from RGB color space to RGB hexadecimal:
+
+`python ./metrochrome.py -rgb <red> <green> <blue> -rgbh`
+
+To convert colors from RGB color space to CMYK color space:
+
+`python ./metrochrome.py -rgb <red> <green> <blue> -cmyk`
