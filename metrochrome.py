@@ -35,6 +35,25 @@ class RgbColor:
         self.red = RgbValue(red).value
         self.green = RgbValue(green).value
         self.blue = RgbValue(blue).value
+    def __str__(self):
+        return "%i %i %i" % (self.red, self.green, self.blue)
+
+class RgbHexColor:
+    def __init__(self, value):
+        # *** Should be more complex eventually
+        self.value = value
+    def __str__(self):
+        return "#%0.6X" % self.value
+
+class CmykColor:
+    def __init__(self, cyan, magenta, yellow, key):
+        # *** Should be more complex eventually
+        self.cyan = cyan
+        self.magenta = magenta
+        self.yellow = yellow
+        self.key = key
+    def __str__(self):
+        return "(%.3g, %.3g, %.3g, %.3g)" % (self.cyan, self.magenta, self.yellow, self.key)
 
 def printHelp():
     print("""
@@ -71,8 +90,7 @@ def exitWithError():
 
 def RGB_to_RGBhex(inputRgb):
     total = inputRgb.red*65536 + inputRgb.green*256 + inputRgb.blue
-    # *** Each color space should have an as str function?
-    return "#%0.6X" % total
+    return RgbHexColor(total)
 
 def RGB_to_CMYK(inputRgb):
     redRatio = inputRgb.red / 255.0
@@ -90,8 +108,7 @@ def RGB_to_CMYK(inputRgb):
         magenta = (1.0 - greenRatio - key) / (1.0 - key)
         yellow = (1.0 - blueRatio - key) / (1.0 - key)
 
-    # *** Each color space should have an as str function
-    return "(%.3g, %.3g, %.3g, %.3g)" % (cyan, magenta, yellow, key)
+    return CmykColor(cyan, magenta, yellow, key)
 
 def RGB_to_CMYKpercent(red, green, blue):
     return "RGB_to_CMYKpercent(): not implimented yet"
