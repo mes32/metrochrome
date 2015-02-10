@@ -53,7 +53,17 @@ class CmykColor:
         self.yellow = yellow
         self.key = key
     def __str__(self):
-        return "(%.3g, %.3g, %.3g, %.3g)" % (self.cyan, self.magenta, self.yellow, self.key)
+        return "%.1f %.1f %.1f %.1f" % (self.cyan, self.magenta, self.yellow, self.key)
+
+class CmykRatioColor:
+    def __init__(self, cyan, magenta, yellow, key):
+        # *** Should be more complex eventually
+        self.cyan = cyan
+        self.magenta = magenta
+        self.yellow = yellow
+        self.key = key
+    def __str__(self):
+        return "%.3g %.3g %.3g %.3g" % (self.cyan, self.magenta, self.yellow, self.key)
 
 def printHelp():
     print("""
@@ -74,8 +84,8 @@ metrochrome.py - a command line tool for exploring color
     color space flags:
     -rgb = RGB color space written as three numbers 0-255 separted by spaces
     -rgbh = RGB in hexadecimal format with a leading hash mark (e.g. #00FF30)
-    -cmyk = CMYK color space 4 comma separated ratio values 0 to 1 written between parenthesis such as (0, 1, 0.955, 0.827)
-    -cmykp = CMYK in percent format 4 space separated percent values 0 to 100 such as 0 100 95.5 82.7
+    -cmyk = CMYK color space 4 space separated percentages from 0 to 100 such as 0 100 95.5 82.7
+    -cmykr = CMYK in percent format 4 space separated ratio values 0 to 1 such as 0 1 0.955 0.827
 
     examples:
     metrochrome.py -rgb 0 0 0 -cmyk        # converts RGB to CMYK and prints (0, 0, 0, 1)
@@ -108,7 +118,7 @@ def RGB_to_CMYK(inputRgb):
         magenta = (1.0 - greenRatio - key) / (1.0 - key)
         yellow = (1.0 - blueRatio - key) / (1.0 - key)
 
-    return CmykColor(cyan, magenta, yellow, key)
+    return CmykColor(100.0*cyan, 100.0*magenta, 100.0*yellow, 100.0*key)
 
 def RGB_to_CMYKpercent(red, green, blue):
     return "RGB_to_CMYKpercent(): not implimented yet"
