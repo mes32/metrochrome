@@ -29,6 +29,21 @@ class RgbValue:
         if self.value < 0 or self.value > 255:
             raise InvalidColorError()
 
+class RgbHexValue:
+    """A RGB value as a hexadecimal 0 through FFFFFF"""
+    def __init__(self, inValue):
+        if isinstance(inValue, int):
+            self.value = inValue
+        elif isinstance(inValue, str):
+            if inValue.startswith("#"):
+                inValue = inValue[1:]
+            self.value = int(inValue, 16)
+        else:
+            raise InvalidColorError()
+
+        if self.value < 0 or self.value > 16777215:
+            raise InvalidColorError()
+
 class RgbColor:
     """A color represented in RGB color space by RgbValues of red green and blue"""
     def __init__(self, red, green, blue):
@@ -39,9 +54,8 @@ class RgbColor:
         return "%i %i %i" % (self.red, self.green, self.blue)
 
 class RgbHexColor:
-    def __init__(self, value):
-        # *** Should be more complex eventually
-        self.value = value
+    def __init__(self, invalue):
+        self.value = RgbHexValue(invalue).value
     def __str__(self):
         return "#%0.6X" % self.value
 
@@ -123,8 +137,14 @@ def RGB_to_CMYK(inputRgb):
 def RGB_to_CMYKpercent(red, green, blue):
     return "RGB_to_CMYKpercent(): not implimented yet"
  
-def RGBhex_to_RGB():
-    return "RGBhex_to_RGB(): not implimented yet"
+def RGBhex_to_RGB(rgbHex):
+
+    initial = int(rgbHex.value)
+    red = initial / 65536
+    green = (initial-red*65536) / 256
+    blue = (initial-red*65536-green*256)
+
+    return RgbColor(red, green, blue)
 
 def RGBhex_to_CMYK():
     return "RGBhex_to_CMYK(): not implimented yet"
@@ -152,6 +172,30 @@ def main():
             print(RGB_to_RGBhex(rgb))
         elif sys.argv[5] == "-cmyk":
             print(RGB_to_CMYK(rgb))
+        else:
+            exitWithError()
+    elif len(sys.argv) == 4 and sys.argv[1] == "-rgbh":
+        try:
+            rgbHex = RgbHexColor(sys.argv[2])
+        except InvalidColorError:
+            exitWithError()
+
+        if sys.argv[3] == "-rgb":
+            print(RGBhex_to_RGB(rgbHex))
+        elif sys.argv[3] == "-cmyk":
+            print(RGBhex_to_CMYK())
+        else:
+            exitWithError()
+    elif len(sys.argv) == 6 and sys.argv[1] == "-cmyk":
+        try:
+            cmyk = CmkyColor(sys.argv[2], sys.argv[3], sys.argv[4])
+        except InvalidColorError:
+            exitWithError()
+
+        if sys.argv[5] == "-rgb":
+            print(CMYK_to_RGB())
+        elif sys.argv[5] == "-rgbh":
+            print(CMYK_to_RGBhex())
         else:
             exitWithError()
     else:
