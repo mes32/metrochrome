@@ -16,6 +16,9 @@ class InvalidColorError(Exception):
     def __str__(self):
         return repr(self.value)
 
+# *** The value constructors should only take numbers
+# *** There should be parsers that explicitly translate from str to colors?
+
 class RgbValue:
     """A red, green, or blue value as an integer 0 through 255"""
     def __init__(self, inValue):
@@ -44,6 +47,19 @@ class RgbHexValue:
         if self.value < 0 or self.value > 16777215:
             raise InvalidColorError()
 
+class CmykValue:
+    """A CMYK value as a float 0 through 100"""
+    def __init__(self, inValue):
+        if isinstance(inValue, float):
+            self.value = inValue
+        elif isinstance(inValue, str) and inValue.isdigit():
+            self.value = float(inValue)
+        else:
+            raise InvalidColorError()
+
+        if self.value < 0.0 or self.value > 100.0:
+            raise InvalidColorError()
+
 class RgbColor:
     """A color represented in RGB color space by RgbValues of red green and blue"""
     def __init__(self, red, green, blue):
@@ -61,11 +77,10 @@ class RgbHexColor:
 
 class CmykColor:
     def __init__(self, cyan, magenta, yellow, key):
-        # *** Should be more complex eventually
-        self.cyan = cyan
-        self.magenta = magenta
-        self.yellow = yellow
-        self.key = key
+        self.cyan = CmykValue(cyan).value
+        self.magenta = CmykValue(magenta).value
+        self.yellow = CmykValue(yellow).value
+        self.key = CmykValue(key).value
     def __str__(self):
         return "%.1f %.1f %.1f %.1f" % (self.cyan, self.magenta, self.yellow, self.key)
 
@@ -149,10 +164,23 @@ def RGBhex_to_RGB(rgbHex):
 def RGBhex_to_CMYK():
     return "RGBhex_to_CMYK(): not implimented yet"
 
-def CMYK_to_RGB():
-    return "CMYK_to_RGB(): not implimented yet"
+def CMYK_to_RGB(cmyk):
+    cyanDiv = cmyk.cyan / 100.0
+    magentaDiv = cmyk.magenta / 100.0
+    yellowDiv = cmyk.yellow / 100.0
+    keyDiv = cmyk.key / 100.0
 
-def CMYK_to_RGBhex():
+    redRatio = -1 * ((cyanDiv * (1.0 - keyDiv)) - (1.0 - keyDiv))
+    greenRatio = -1 * ((magentaDiv * (1.0 - keyDiv)) - (1.0 - keyDiv))
+    blueRatio = -1 * ((yellowDiv * (1.0 - keyDiv)) - (1.0 - keyDiv))
+
+    red = int(redRatio * 255)
+    green = int(greenRatio * 255)
+    blue = int(blueRatio * 255)
+
+    return RgbColor(red, green, blue)
+
+def CMYK_to_RGBhex(cmyk):
     return "CMYK_to_RGBhex(): not implimented yet"
 
 def main():
@@ -186,16 +214,16 @@ def main():
             print(RGBhex_to_CMYK())
         else:
             exitWithError()
-    elif len(sys.argv) == 6 and sys.argv[1] == "-cmyk":
+    elif len(sys.argv) == 7 and sys.argv[1] == "-cmyk":
         try:
-            cmyk = CmkyColor(sys.argv[2], sys.argv[3], sys.argv[4])
+            cmyk = CmykColor(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
         except InvalidColorError:
             exitWithError()
 
-        if sys.argv[5] == "-rgb":
-            print(CMYK_to_RGB())
-        elif sys.argv[5] == "-rgbh":
-            print(CMYK_to_RGBhex())
+        if sys.argv[6] == "-rgb":
+            print(CMYK_to_RGB(cmyk))
+        elif sys.argv[6] == "-rgbh":
+            print(CMYK_to_RGBhex(cmyk))
         else:
             exitWithError()
     else:
