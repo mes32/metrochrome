@@ -16,37 +16,6 @@ class InvalidColorError(Exception):
     def __str__(self):
         return repr(self.value)
 
-# *** The value constructors should only take numbers
-# *** There should be parsers that explicitly translate from str to colors?
-
-class RgbValue:
-    """A red, green, or blue value as an integer 0 through 255"""
-    def __init__(self, inValue):
-        if isinstance(inValue, int):
-            self.value = inValue
-        elif isinstance(inValue, str) and inValue.isdigit():
-            self.value = int(inValue)
-        else:
-            raise InvalidColorError()
-
-        if self.value < 0 or self.value > 255:
-            raise InvalidColorError()
-
-class RgbHexValue:
-    """A RGB value as a hexadecimal 0 through FFFFFF"""
-    def __init__(self, inValue):
-        if isinstance(inValue, int):
-            self.value = inValue
-        elif isinstance(inValue, str):
-            if inValue.startswith("#"):
-                inValue = inValue[1:]
-            self.value = int(inValue, 16)
-        else:
-            raise InvalidColorError()
-
-        if self.value < 0 or self.value > 16777215:
-            raise InvalidColorError()
-
 class CmykValue:
     """A CMYK value as a float 0 through 100"""
     def __init__(self, inValue):
@@ -61,19 +30,63 @@ class CmykValue:
             raise InvalidColorError()
 
 class RgbColor:
-    """A color represented in RGB color space by RgbValues of red green and blue"""
+    """A color represented in RGB color space by values of red green and blue"""
     def __init__(self, red, green, blue):
-        self.red = RgbValue(red).value
-        self.green = RgbValue(green).value
-        self.blue = RgbValue(blue).value
+        self.red = red
+        self.green = green
+        self.blue = blue
+        if self.invalid():
+            raise InvalidColorError()
+
     def __str__(self):
         return "%i %i %i" % (self.red, self.green, self.blue)
 
+    def parseString(self, red, green, blue):
+        try:
+            self.red = int(red)
+            self.green = int(green)
+            self.blue = int(blue)
+        except:
+            raise InvalidColorError()
+        if self.invalid():
+            raise InvalidColorError()
+
+    def invalid(self):
+        r = self.red
+        g = self.green
+        b = self.blue
+        if r < 0 or r > 255 or g < 0 or g > 255 or b < 0 or b > 255:
+            return True
+        else:
+            return False
+
 class RgbHexColor:
     def __init__(self, invalue):
-        self.value = RgbHexValue(invalue).value
+        self.value = invalue
+        if self.invalid():
+            raise InvalidColorError()
+
     def __str__(self):
         return "#%0.6X" % self.value
+
+    def parseString(self, string):
+        if string.startswith("#"):
+            string = string[1:]
+        if len(string) != 6:
+            raise InvalidColorError()
+        try:
+            val = int(string, 16)
+        except:
+            raise InvalidColorError()
+        self.value = val
+        if self.invalid():
+            raise InvalidColorError()
+
+    def invalid(self):
+        if self.value < 0 or self.value > 16777215:
+            return True
+        else:
+            return False
 
 class CmykColor:
     def __init__(self, cyan, magenta, yellow, key):
@@ -81,6 +94,7 @@ class CmykColor:
         self.magenta = CmykValue(magenta).value
         self.yellow = CmykValue(yellow).value
         self.key = CmykValue(key).value
+
     def __str__(self):
         return "%.1f %.1f %.1f %.1f" % (self.cyan, self.magenta, self.yellow, self.key)
 
@@ -91,6 +105,7 @@ class CmykRatioColor:
         self.magenta = magenta
         self.yellow = yellow
         self.key = key
+
     def __str__(self):
         return "%.3g %.3g %.3g %.3g" % (self.cyan, self.magenta, self.yellow, self.key)
 
@@ -192,7 +207,10 @@ def main():
 
     elif len(sys.argv) == 6 and sys.argv[1] == "-rgb":
         try:
-            rgb = RgbColor(sys.argv[2], sys.argv[3], sys.argv[4])
+            rgb = RgbColor(0,0,0)
+            print(rgb)
+            rgb.parseString(sys.argv[2], sys.argv[3], sys.argv[4])
+            print(rgb)
         except InvalidColorError:
             exitWithError()
 
@@ -204,7 +222,11 @@ def main():
             exitWithError()
     elif len(sys.argv) == 4 and sys.argv[1] == "-rgbh":
         try:
-            rgbHex = RgbHexColor(sys.argv[2])
+            rgbHex = RgbHexColor(0)
+            print(rgbHex)
+            rgbHex.parseString(sys.argv[2])
+            print(rgbHex)
+
         except InvalidColorError:
             exitWithError()
 
