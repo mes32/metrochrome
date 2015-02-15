@@ -16,19 +16,6 @@ class InvalidColorError(Exception):
     def __str__(self):
         return repr(self.value)
 
-class CmykValue:
-    """A CMYK value as a float 0 through 100"""
-    def __init__(self, inValue):
-        if isinstance(inValue, float):
-            self.value = inValue
-        elif isinstance(inValue, str) and inValue.isdigit():
-            self.value = float(inValue)
-        else:
-            raise InvalidColorError()
-
-        if self.value < 0.0 or self.value > 100.0:
-            raise InvalidColorError()
-
 class RgbColor:
     """A color represented in RGB color space by values of red green and blue"""
     def __init__(self, red, green, blue):
@@ -90,13 +77,36 @@ class RgbHexColor:
 
 class CmykColor:
     def __init__(self, cyan, magenta, yellow, key):
-        self.cyan = CmykValue(cyan).value
-        self.magenta = CmykValue(magenta).value
-        self.yellow = CmykValue(yellow).value
-        self.key = CmykValue(key).value
+        self.cyan = cyan
+        self.magenta = magenta
+        self.yellow = yellow
+        self.key = key
+        if self.invalid():
+            raise InvalidColorError()
 
     def __str__(self):
         return "%.1f %.1f %.1f %.1f" % (self.cyan, self.magenta, self.yellow, self.key)
+
+    def parseString(self, cyan, magenta, yellow, key):
+        try:
+            self.cyan = float(cyan)
+            self.magenta = float(magenta)
+            self.yellow = float(yellow)
+            self.key = float(key)
+        except:
+            raise InvalidColorError()
+        if self.invalid():
+            raise InvalidColorError()
+
+    def invalid(self):
+        c = self.cyan
+        m = self.magenta
+        y = self.yellow
+        k = self.key
+        if c < 0.0 or c > 100.0 or m < 0.0 or m > 100.0 or y < 0.0 or y > 100.0 or k < 0.0 or k > 100.0:
+            return True
+        else:
+            return False
 
 class CmykRatioColor:
     def __init__(self, cyan, magenta, yellow, key):
@@ -208,9 +218,7 @@ def main():
     elif len(sys.argv) == 6 and sys.argv[1] == "-rgb":
         try:
             rgb = RgbColor(0,0,0)
-            print(rgb)
             rgb.parseString(sys.argv[2], sys.argv[3], sys.argv[4])
-            print(rgb)
         except InvalidColorError:
             exitWithError()
 
@@ -220,13 +228,11 @@ def main():
             print(RGB_to_CMYK(rgb))
         else:
             exitWithError()
+
     elif len(sys.argv) == 4 and sys.argv[1] == "-rgbh":
         try:
             rgbHex = RgbHexColor(0)
-            print(rgbHex)
             rgbHex.parseString(sys.argv[2])
-            print(rgbHex)
-
         except InvalidColorError:
             exitWithError()
 
@@ -236,9 +242,11 @@ def main():
             print(RGBhex_to_CMYK())
         else:
             exitWithError()
+
     elif len(sys.argv) == 7 and sys.argv[1] == "-cmyk":
         try:
-            cmyk = CmykColor(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+            cmyk = CmykColor(0,0,0,0)
+            cmyk.parseString(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
         except InvalidColorError:
             exitWithError()
 
