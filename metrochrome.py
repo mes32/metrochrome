@@ -110,14 +110,36 @@ class CmykColor:
 
 class CmykRatioColor:
     def __init__(self, cyan, magenta, yellow, key):
-        # *** Should be more complex eventually
-        self.cyan = cyan
-        self.magenta = magenta
-        self.yellow = yellow
-        self.key = key
+        self.cyan = cyan / 100.0
+        self.magenta = magenta / 100.0
+        self.yellow = yellow / 100.0
+        self.key = key / 100.0
+        if self.invalid():
+            raise InvalidColorError()
 
     def __str__(self):
         return "%.3g %.3g %.3g %.3g" % (self.cyan, self.magenta, self.yellow, self.key)
+
+    def parseString(self, cyan, magenta, yellow, key):
+        try:
+            self.cyan = float(cyan)
+            self.magenta = float(magenta)
+            self.yellow = float(yellow)
+            self.key = float(key)
+        except:
+            raise InvalidColorError()
+        if self.invalid():
+            raise InvalidColorError()
+
+    def invalid(self):
+        c = self.cyan
+        m = self.magenta
+        y = self.yellow
+        k = self.key
+        if c < 0.0 or c > 1.0 or m < 0.0 or m > 1.0 or y < 0.0 or y > 1.0 or k < 0.0 or k > 1.0:
+            return True
+        else:
+            return False
 
 def printHelp():
     print("""
@@ -174,8 +196,9 @@ def RGB_to_CMYK(inputRgb):
 
     return CmykColor(100.0*cyan, 100.0*magenta, 100.0*yellow, 100.0*key)
 
-def RGB_to_CMYKpercent(red, green, blue):
-    return "RGB_to_CMYKpercent(): not implimented yet"
+def RGB_to_CMYKratio(rgb):
+    cmyk = RGB_to_CMYK(rgb)
+    return CMYK_to_CMYKratio(cmyk)
  
 def RGBhex_to_RGB(rgbHex):
 
@@ -186,8 +209,13 @@ def RGBhex_to_RGB(rgbHex):
 
     return RgbColor(red, green, blue)
 
-def RGBhex_to_CMYK():
-    return "RGBhex_to_CMYK(): not implimented yet"
+def RGBhex_to_CMYK(rgbHex):
+    rgb = RGBhex_to_RGB(rgbHex)
+    return RGB_to_CMYK(rgb)
+
+def RGBhex_to_CMYKratio(rgbHex):
+    rgb = RGBhex_to_RGB(rgbHex)
+    return RGB_to_CMYKratio(rgb)
 
 def CMYK_to_RGB(cmyk):
     cyanDiv = cmyk.cyan / 100.0
@@ -206,7 +234,27 @@ def CMYK_to_RGB(cmyk):
     return RgbColor(red, green, blue)
 
 def CMYK_to_RGBhex(cmyk):
-    return "CMYK_to_RGBhex(): not implimented yet"
+    rgb = CMYK_to_RGB(cmyk)
+    return RGB_to_RGBhex(rgb)
+
+def CMYK_to_CMYKratio(cmyk):
+    return CmykRatioColor(cmyk.cyan, cmyk.magenta, cmyk.yellow, cmyk.key)
+
+def CMYKratio_to_RGB(cmykr):
+    cmyk = CMYKratio_to_CMYK(cmykr)
+    return CMYK_to_RGB(cmyk)
+
+def CMYKratio_to_RGBhex(cmykr):
+    cmyk = CMYKratio_to_CMYK(cmykr)
+    return CMYK_to_RGBhex(cmyk)
+
+def CMYKratio_to_CMYK(cmykr):
+    cyan = cmykr.cyan * 100.0
+    magenta = cmykr.magenta * 100.0
+    yellow = cmykr.yellow * 100.0
+    key = cmykr.key * 100.0
+
+    return CmykColor(cyan, magenta, yellow, key)
 
 def main():
 
@@ -226,6 +274,8 @@ def main():
             print(RGB_to_RGBhex(rgb))
         elif sys.argv[5] == "-cmyk":
             print(RGB_to_CMYK(rgb))
+        elif sys.argv[5] == "-cmykr":
+            print(RGB_to_CMYKratio(rgb))
         else:
             exitWithError()
 
@@ -239,7 +289,9 @@ def main():
         if sys.argv[3] == "-rgb":
             print(RGBhex_to_RGB(rgbHex))
         elif sys.argv[3] == "-cmyk":
-            print(RGBhex_to_CMYK())
+            print(RGBhex_to_CMYK(rgbHex))
+        elif sys.argv[3] == "-cmykr":
+            print(RGBhex_to_CMYKratio(rgbHex))
         else:
             exitWithError()
 
@@ -254,8 +306,27 @@ def main():
             print(CMYK_to_RGB(cmyk))
         elif sys.argv[6] == "-rgbh":
             print(CMYK_to_RGBhex(cmyk))
+        elif sys.argv[6] == "-cmykr":
+            print(CMYK_to_CMYKratio(cmyk))
         else:
             exitWithError()
+
+    elif len(sys.argv) == 7 and sys.argv[1] == "-cmykr":
+        try:
+            cmykr = CmykRatioColor(0,0,0,0)
+            cmykr.parseString(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+        except InvalidColorError:
+            exitWithError()
+
+        if sys.argv[6] == "-rgb":
+            print(CMYKratio_to_RGB(cmykr))
+        elif sys.argv[6] == "-rgbh":
+            print(CMYKratio_to_RGBhex(cmykr))
+        elif sys.argv[6] == "-cmyk":
+            print(CMYKratio_to_CMYK(cmykr))
+        else:
+            exitWithError()
+
     else:
         exitWithError()
 
