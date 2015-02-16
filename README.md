@@ -14,3 +14,8 @@ To convert colors from RGB color space to RGB hexadecimal:
 
 To convert colors from RGB color space to CMYK color space:
 `python ./metrochrome.py -rgb <red> <green> <blue> -cmyk`
+
+References
+----------
+[Colour Rendering of Spectra](http://www.fourmilab.ch/documents/specrend/)
+[RapidTables.com](http://www.rapidtables.com/)
