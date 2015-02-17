@@ -141,6 +141,36 @@ class CmykRatioColor:
         else:
             return False
 
+class HsvColor:
+    def __init__(self, hue, saturation, value):
+        self.hue = hue
+        self.saturation = saturation
+        self.value = value
+        if self.invalid():
+            raise InvalidColorError()
+
+    def __str__(self):
+        return "%.1f %.3f %.3f" % (self.hue, self.saturation, self.lightness)
+
+    def parseString(self, hue, saturation, lightness):
+        try:
+            self.hue = float(hue)
+            self.saturation = float(saturation)
+            self.lightness = float(lightness)
+        except:
+            raise InvalidColorError()
+        if self.invalid():
+            raise InvalidColorError()
+
+    def invalid(self):
+        h = self.hue
+        s = self.saturation
+        l = self.lighness
+        if h < 0.0 or h > 360.0 or s < 0.0 or s > 1.0 or l < 0.0 or l > 1.0:
+            return True
+        else:
+            return False
+
 def printHelp():
     print("""
 metrochrome.py - a command line tool for exploring color
