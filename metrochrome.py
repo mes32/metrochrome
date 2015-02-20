@@ -152,7 +152,7 @@ class HsvColor:
     def __str__(self):
         return "%.1f %.3f %.3f" % (self.hue, self.saturation, self.value)
 
-    def parseString(self, hue, saturation, lightness):
+    def parseString(self, hue, saturation, value):
         try:
             self.hue = float(hue)
             self.saturation = float(saturation)
@@ -167,6 +167,36 @@ class HsvColor:
         s = self.saturation
         v = self.value
         if h < 0.0 or h > 360.0 or s < 0.0 or s > 1.0 or v < 0.0 or v > 1.0:
+            return True
+        else:
+            return False
+
+class HslColor:
+    def __init__(self, hue, saturation, lightness):
+        self.hue = hue
+        self.saturation = saturation
+        self.lightness = lightness
+        if self.invalid():
+            raise InvalidColorError()
+
+    def __str__(self):
+        return "%.1f %.3f %.3f" % (self.hue, self.saturation, self.lightness)
+
+    def parseString(self, hue, saturation, lightness):
+        try:
+            self.hue = float(hue)
+            self.saturation = float(saturation)
+            self.lightness = float(lightness)
+        except:
+            raise InvalidColorError()
+        if self.invalid():
+            raise InvalidColorError()
+
+    def invalid(self):
+        h = self.hue
+        s = self.saturation
+        l = self.lightness
+        if h < 0.0 or h > 360.0 or s < 0.0 or s > 1.0 or l < 0.0 or l > 1.0:
             return True
         else:
             return False
@@ -260,6 +290,35 @@ def RGB_to_HSV(rgb):
     hue *= 60.0
 
     return HsvColor(hue, saturation, value)
+
+def RGB_to_HSL(rgb):
+    red = rgb.red / 255.0
+    green = rgb.green / 255.0
+    blue = rgb.blue / 255.0
+
+    m = min(red, green, blue)
+    M = max(red, green, blue)
+
+    lightness = 0.5 * (M + m)
+    chroma = M - m
+
+    if lightness == 0.0 or lightness == 1.0:
+        saturation = 0.0
+    else:
+        saturation = chroma / (1 - abs(2 * lightness - 1))
+
+    if chroma == 0:
+        hue = 0.0
+    elif red == M:
+        hue = ((green - blue) / chroma) % 6
+    elif green == M:
+        hue = ((blue - red) / chroma) + 2
+    elif blue == M:
+		hue = ((red - green) / chroma) + 4;
+
+    hue *= 60.0
+
+    return HslColor(hue, saturation, lightness)
  
 def RGBhex_to_RGB(rgbHex):
 
@@ -351,6 +410,8 @@ def main():
             print(RGB_to_CMYKratio(rgb))
         elif sys.argv[5] == "-hsv":
             print(RGB_to_HSV(rgb))
+        elif sys.argv[5] == "-hsl":
+            print(RGB_to_HSL(rgb))
         else:
             exitWithError()
 
