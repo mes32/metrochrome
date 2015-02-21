@@ -11,6 +11,7 @@
 import sys
 
 class InvalidColorException(Exception):
+    """An exception that indicates inputs to a color class are out of range for that color space"""
     def __init__(self):
         self.value = "Invalid color error"
     def __str__(self):
@@ -48,6 +49,7 @@ class RGBColor:
             return False
 
 class RGBHexColor:
+    """A color represented in RGB color space by a single hexadecimal value"""
     def __init__(self, invalue):
         self.value = invalue
         if self.invalid():
@@ -76,6 +78,7 @@ class RGBHexColor:
             return False
 
 class CMYKColor:
+    """A color represented in CMYK color space by four percentages between 0 and 100"""
     def __init__(self, cyan, magenta, yellow, key):
         self.cyan = cyan
         self.magenta = magenta
@@ -109,6 +112,7 @@ class CMYKColor:
             return False
 
 class CMYKRatioColor:
+    """A color represented in CMYK color space by four ratios values between 0 and 1"""
     def __init__(self, cyan, magenta, yellow, key):
         self.cyan = cyan / 100.0
         self.magenta = magenta / 100.0
@@ -142,6 +146,7 @@ class CMYKRatioColor:
             return False
 
 class HSVColor:
+    """A color represented in HSV color space: hue, saturation, value"""
     def __init__(self, hue, saturation, value):
         self.hue = hue
         self.saturation = saturation
@@ -172,6 +177,7 @@ class HSVColor:
             return False
 
 class HSLColor:
+    """A color represented in HSL color space: hue, saturation, lightness"""
     def __init__(self, hue, saturation, lightness):
         self.hue = hue
         self.saturation = saturation
