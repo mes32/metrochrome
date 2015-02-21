@@ -10,20 +10,20 @@
 
 import sys
 
-class InvalidColorError(Exception):
+class InvalidColorException(Exception):
     def __init__(self):
         self.value = "Invalid color error"
     def __str__(self):
         return repr(self.value)
 
-class RgbColor:
+class RGBColor:
     """A color represented in RGB color space by values of red green and blue"""
     def __init__(self, red, green, blue):
         self.red = red
         self.green = green
         self.blue = blue
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def __str__(self):
         return "%i %i %i" % (self.red, self.green, self.blue)
@@ -34,9 +34,9 @@ class RgbColor:
             self.green = int(green)
             self.blue = int(blue)
         except:
-            raise InvalidColorError()
+            raise InvalidColorException()
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def invalid(self):
         r = self.red
@@ -47,11 +47,11 @@ class RgbColor:
         else:
             return False
 
-class RgbHexColor:
+class RGBHexColor:
     def __init__(self, invalue):
         self.value = invalue
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def __str__(self):
         return "#%0.6X" % self.value
@@ -60,14 +60,14 @@ class RgbHexColor:
         if string.startswith("#"):
             string = string[1:]
         if len(string) != 6:
-            raise InvalidColorError()
+            raise InvalidColorException()
         try:
             val = int(string, 16)
         except:
-            raise InvalidColorError()
+            raise InvalidColorException()
         self.value = val
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def invalid(self):
         if self.value < 0 or self.value > 16777215:
@@ -75,14 +75,14 @@ class RgbHexColor:
         else:
             return False
 
-class CmykColor:
+class CMYKColor:
     def __init__(self, cyan, magenta, yellow, key):
         self.cyan = cyan
         self.magenta = magenta
         self.yellow = yellow
         self.key = key
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def __str__(self):
         return "%.1f %.1f %.1f %.1f" % (self.cyan, self.magenta, self.yellow, self.key)
@@ -94,9 +94,9 @@ class CmykColor:
             self.yellow = float(yellow)
             self.key = float(key)
         except:
-            raise InvalidColorError()
+            raise InvalidColorException()
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def invalid(self):
         c = self.cyan
@@ -108,14 +108,14 @@ class CmykColor:
         else:
             return False
 
-class CmykRatioColor:
+class CMYKRatioColor:
     def __init__(self, cyan, magenta, yellow, key):
         self.cyan = cyan / 100.0
         self.magenta = magenta / 100.0
         self.yellow = yellow / 100.0
         self.key = key / 100.0
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def __str__(self):
         return "%.3g %.3g %.3g %.3g" % (self.cyan, self.magenta, self.yellow, self.key)
@@ -127,9 +127,9 @@ class CmykRatioColor:
             self.yellow = float(yellow)
             self.key = float(key)
         except:
-            raise InvalidColorError()
+            raise InvalidColorException()
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def invalid(self):
         c = self.cyan
@@ -141,13 +141,13 @@ class CmykRatioColor:
         else:
             return False
 
-class HsvColor:
+class HSVColor:
     def __init__(self, hue, saturation, value):
         self.hue = hue
         self.saturation = saturation
         self.value = value
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def __str__(self):
         return "%.1f %.3f %.3f" % (self.hue, self.saturation, self.value)
@@ -158,9 +158,9 @@ class HsvColor:
             self.saturation = float(saturation)
             self.value = float(value)
         except:
-            raise InvalidColorError()
+            raise InvalidColorException()
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def invalid(self):
         h = self.hue
@@ -171,13 +171,13 @@ class HsvColor:
         else:
             return False
 
-class HslColor:
+class HSLColor:
     def __init__(self, hue, saturation, lightness):
         self.hue = hue
         self.saturation = saturation
         self.lightness = lightness
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def __str__(self):
         return "%.1f %.3f %.3f" % (self.hue, self.saturation, self.lightness)
@@ -188,9 +188,9 @@ class HslColor:
             self.saturation = float(saturation)
             self.lightness = float(lightness)
         except:
-            raise InvalidColorError()
+            raise InvalidColorException()
         if self.invalid():
-            raise InvalidColorError()
+            raise InvalidColorException()
 
     def invalid(self):
         h = self.hue
@@ -236,7 +236,7 @@ def exitWithError():
 
 def RGB_to_RGBhex(inputRgb):
     total = inputRgb.red*65536 + inputRgb.green*256 + inputRgb.blue
-    return RgbHexColor(total)
+    return RGBHexColor(total)
 
 def RGB_to_CMYK(inputRgb):
     redRatio = inputRgb.red / 255.0
@@ -254,7 +254,7 @@ def RGB_to_CMYK(inputRgb):
         magenta = (1.0 - greenRatio - key) / (1.0 - key)
         yellow = (1.0 - blueRatio - key) / (1.0 - key)
 
-    return CmykColor(100.0*cyan, 100.0*magenta, 100.0*yellow, 100.0*key)
+    return CMYKColor(100.0*cyan, 100.0*magenta, 100.0*yellow, 100.0*key)
 
 def RGB_to_CMYKratio(rgb):
     cmyk = RGB_to_CMYK(rgb)
@@ -276,7 +276,7 @@ def RGB_to_HSV(rgb):
     else:
         saturation = 0.0
         hue = 0.0
-        return HsvColor(hue, saturation, value)
+        return HSVColor(hue, saturation, value)
 
     if chroma == 0:
         hue = 0.0
@@ -289,7 +289,7 @@ def RGB_to_HSV(rgb):
 
     hue *= 60.0
 
-    return HsvColor(hue, saturation, value)
+    return HSVColor(hue, saturation, value)
 
 def RGB_to_HSL(rgb):
     red = rgb.red / 255.0
@@ -318,7 +318,7 @@ def RGB_to_HSL(rgb):
 
     hue *= 60.0
 
-    return HslColor(hue, saturation, lightness)
+    return HSLColor(hue, saturation, lightness)
  
 def RGBhex_to_RGB(rgbHex):
 
@@ -327,7 +327,7 @@ def RGBhex_to_RGB(rgbHex):
     green = (initial-red*65536) / 256
     blue = (initial-red*65536-green*256)
 
-    return RgbColor(red, green, blue)
+    return RGBColor(red, green, blue)
 
 def RGBhex_to_CMYK(rgbHex):
     rgb = RGBhex_to_RGB(rgbHex)
@@ -355,14 +355,14 @@ def CMYK_to_RGB(cmyk):
     green = int(greenRatio * 255)
     blue = int(blueRatio * 255)
 
-    return RgbColor(red, green, blue)
+    return RGBColor(red, green, blue)
 
 def CMYK_to_RGBhex(cmyk):
     rgb = CMYK_to_RGB(cmyk)
     return RGB_to_RGBhex(rgb)
 
 def CMYK_to_CMYKratio(cmyk):
-    return CmykRatioColor(cmyk.cyan, cmyk.magenta, cmyk.yellow, cmyk.key)
+    return CMYKRatioColor(cmyk.cyan, cmyk.magenta, cmyk.yellow, cmyk.key)
 
 def CMYK_to_HSV(cmyk):
     rgb = CMYK_to_RGB(cmyk)
@@ -382,7 +382,7 @@ def CMYKratio_to_CMYK(cmykr):
     yellow = cmykr.yellow * 100.0
     key = cmykr.key * 100.0
 
-    return CmykColor(cyan, magenta, yellow, key)
+    return CMYKColor(cyan, magenta, yellow, key)
 
 def CMYKratio_to_HSV(cmykr):
     rgb = CMYKratio_to_RGB(cmykr)
@@ -397,9 +397,9 @@ def main():
 
     elif len(sys.argv) == 6 and sys.argv[1] == "-rgb":
         try:
-            rgb = RgbColor(0,0,0)
+            rgb = RGBColor(0,0,0)
             rgb.parseString(sys.argv[2], sys.argv[3], sys.argv[4])
-        except InvalidColorError:
+        except InvalidColorException:
             exitWithError()
 
         if sys.argv[5] == "-rgbh":
@@ -417,9 +417,9 @@ def main():
 
     elif len(sys.argv) == 4 and sys.argv[1] == "-rgbh":
         try:
-            rgbHex = RgbHexColor(0)
+            rgbHex = RGBHexColor(0)
             rgbHex.parseString(sys.argv[2])
-        except InvalidColorError:
+        except InvalidColorException:
             exitWithError()
 
         if sys.argv[3] == "-rgb":
@@ -435,9 +435,9 @@ def main():
 
     elif len(sys.argv) == 7 and sys.argv[1] == "-cmyk":
         try:
-            cmyk = CmykColor(0,0,0,0)
+            cmyk = CMYKColor(0,0,0,0)
             cmyk.parseString(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
-        except InvalidColorError:
+        except InvalidColorException:
             exitWithError()
 
         if sys.argv[6] == "-rgb":
@@ -453,9 +453,9 @@ def main():
 
     elif len(sys.argv) == 7 and sys.argv[1] == "-cmykr":
         try:
-            cmykr = CmykRatioColor(0,0,0,0)
+            cmykr = CMYKRatioColor(0,0,0,0)
             cmykr.parseString(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
-        except InvalidColorError:
+        except InvalidColorException:
             exitWithError()
 
         if sys.argv[6] == "-rgb":
