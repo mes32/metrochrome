@@ -347,6 +347,10 @@ def RGBhex_to_HSV(rgbHex):
     rgb = RGBhex_to_RGB(rgbHex)
     return RGB_to_HSV(rgb)
 
+def RGBhex_to_HSL(rgbHex):
+    rgb = RGBhex_to_RGB(rgbHex)
+    return RGB_to_HSL(rgb)
+
 def CMYK_to_RGB(cmyk):
     cyanDiv = cmyk.cyan / 100.0
     magentaDiv = cmyk.magenta / 100.0
@@ -374,6 +378,10 @@ def CMYK_to_HSV(cmyk):
     rgb = CMYK_to_RGB(cmyk)
     return RGB_to_HSV(rgb)
 
+def CMYK_to_HSL(cmyk):
+    rgb = CMYK_to_RGB(cmyk)
+    return RGB_to_HSL(rgb)
+
 def CMYKratio_to_RGB(cmykr):
     cmyk = CMYKratio_to_CMYK(cmykr)
     return CMYK_to_RGB(cmyk)
@@ -394,9 +402,68 @@ def CMYKratio_to_HSV(cmykr):
     rgb = CMYKratio_to_RGB(cmykr)
     return RGB_to_HSV(rgb)
 
-def main():
+def CMYKratio_to_HSL(cmykr):
+    rgb = CMYKratio_to_RGB(cmykr)
+    return RGB_to_HSL(rgb)
 
-    #print("argv: " + str(sys.argv))
+def HSV_to_RGB(hsv):
+
+    hue = hsv.hue
+    saturation = hsv.saturation
+    value = hsv.value
+
+    c = value * saturation
+    x = c * ( 1 - abs( ((hue/60.0) % 2) - 1 ) )
+    m = value - c
+
+    if hue < 60:
+        red = c
+        green = x
+        blue = 0
+    elif hue < 120:
+        red = x
+        green = c
+        blue = 0
+    elif hue < 180:
+        red = 0
+        green = c
+        blue = x
+    elif hue < 240:
+        red = 0
+        green = x
+        blue = c
+    elif hue < 300:
+        red = x
+        green = 0
+        blue = c
+    else:
+        red = c
+        green = 0
+        blue = x
+
+    red = (red + m) * 255
+    green = (green + m) * 255
+    blue = (blue + m) * 255
+
+    return RGBColor(red, green, blue)
+
+def HSV_to_RGBhex(hsv):
+    rgb = HSV_to_RGB(hsv)
+    return RGB_to_RGBhex(rgb)
+
+def HSV_to_CMYK(hsv):
+    rgb = HSV_to_RGB(hsv)
+    return RGB_to_CMYK(rgb)
+
+def HSV_to_CMYKratio(hsv):
+    rgb = HSV_to_RGB(hsv)
+    return RGB_to_CMYKratio(rgb)
+
+def HSV_to_HSL(hsv):
+    rgb = HSV_to_RGB(hsv)
+    return RGB_to_HSL(rgb)
+
+def main():
 
     if len(sys.argv) == 2 and (sys.argv[1] == "-h" or sys.argv[1] == "-help"):
         printHelp()
@@ -436,6 +503,8 @@ def main():
             print(RGBhex_to_CMYKratio(rgbHex))
         elif sys.argv[3] == "-hsv":
             print(RGBhex_to_HSV(rgbHex))
+        elif sys.argv[3] == "-hsl":
+            print(RGBhex_to_HSL(rgbHex))
         else:
             exitWithError()
 
@@ -454,6 +523,8 @@ def main():
             print(CMYK_to_CMYKratio(cmyk))
         elif sys.argv[6] == "-hsv":
             print(CMYK_to_HSV(cmyk))
+        elif sys.argv[6] == "-hsl":
+            print(CMYK_to_HSL(cmyk))
         else:
             exitWithError()
 
@@ -472,6 +543,28 @@ def main():
             print(CMYKratio_to_CMYK(cmykr))
         elif sys.argv[6] == "-hsv":
             print(CMYKratio_to_HSV(cmykr))
+        elif sys.argv[6] == "-hsl":
+            print(CMYKratio_to_HSL(cmykr))
+        else:
+            exitWithError()
+
+    elif len(sys.argv) == 6 and sys.argv[1] == "-hsv":
+        try:
+            hsv = HSVColor(0,0,0)
+            hsv.parseString(sys.argv[2], sys.argv[3], sys.argv[4])
+        except InvalidColorException:
+            exitWithError()
+
+        if sys.argv[5] == "-rgb":
+            print(HSV_to_RGB(hsv))
+        elif sys.argv[5] == "-rgbh":
+            print(HSV_to_RGBhex(hsv))
+        elif sys.argv[5] == "-cmyk":
+            print(HSV_to_CMYK(hsv))
+        elif sys.argv[5] == "-cmykr":
+            print(HSV_to_CMYKratio(hsv))
+        elif sys.argv[5] == "-hsl":
+            print(HSV_to_HSL(hsv))
         else:
             exitWithError()
 
