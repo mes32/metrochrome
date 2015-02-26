@@ -241,10 +241,12 @@ def exitWithError():
     sys.exit(1)
 
 def RGB_to_RGBhex(inputRgb):
+    """Converts RGB colors to hexadecimal representation"""
     total = inputRgb.red*65536 + inputRgb.green*256 + inputRgb.blue
     return RGBHexColor(total)
 
 def RGB_to_CMYK(inputRgb):
+    """Converts colors in RGB color space to CMYK"""
     redRatio = inputRgb.red / 255.0
     greenRatio = inputRgb.green / 255.0
     blueRatio = inputRgb.blue / 255.0
@@ -263,10 +265,12 @@ def RGB_to_CMYK(inputRgb):
     return CMYKColor(100.0*cyan, 100.0*magenta, 100.0*yellow, 100.0*key)
 
 def RGB_to_CMYKratio(rgb):
+    """Converts colors in RGB color space to CMYK with a ratio rather than percentage representation"""
     cmyk = RGB_to_CMYK(rgb)
     return CMYK_to_CMYKratio(cmyk)
 
 def RGB_to_HSV(rgb):
+    """Converts colors in RGB color space to HSV"""
     red = rgb.red / 255.0
     green = rgb.green / 255.0
     blue = rgb.blue / 255.0
@@ -298,6 +302,7 @@ def RGB_to_HSV(rgb):
     return HSVColor(hue, saturation, value)
 
 def RGB_to_HSL(rgb):
+    """Converts colors in RGB color space to HSL"""
     red = rgb.red / 255.0
     green = rgb.green / 255.0
     blue = rgb.blue / 255.0
@@ -327,6 +332,7 @@ def RGB_to_HSL(rgb):
     return HSLColor(hue, saturation, lightness)
  
 def RGBhex_to_RGB(rgbHex):
+    """Converts RGB hexadecimal representation to standard RGB"""
 
     initial = int(rgbHex.value)
     red = initial / 65536
@@ -336,18 +342,22 @@ def RGBhex_to_RGB(rgbHex):
     return RGBColor(red, green, blue)
 
 def RGBhex_to_CMYK(rgbHex):
+    """Converts RGB color space (hexadecimal representation) to CMYK"""
     rgb = RGBhex_to_RGB(rgbHex)
     return RGB_to_CMYK(rgb)
 
 def RGBhex_to_CMYKratio(rgbHex):
+    """Converts RGB color space (hexadecimal representation) to CMYK (ratio representation)"""
     rgb = RGBhex_to_RGB(rgbHex)
     return RGB_to_CMYKratio(rgb)
 
 def RGBhex_to_HSV(rgbHex):
+    """Converts RGB color space (hexadecimal representation) to HSV"""
     rgb = RGBhex_to_RGB(rgbHex)
     return RGB_to_HSV(rgb)
 
 def RGBhex_to_HSL(rgbHex):
+    """Converts RGB color space (hexadecimal representation) to HSL"""
     rgb = RGBhex_to_RGB(rgbHex)
     return RGB_to_HSL(rgb)
 
