@@ -207,6 +207,37 @@ class HSLColor:
         else:
             return False
 
+class CIEColor:
+    """A color represented in CIE color space"""
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+        if self.invalid():
+            raise InvalidColorException()
+
+    def __str__(self):
+        return "%.3f %.3f %.3f" % (self.x, self.y, self.z)
+
+    def parseString(self, x, y, z):
+        try:
+            self.x = float(x)
+            self.y = float(y)
+            self.z = float(z)
+        except:
+            raise InvalidColorException()
+        if self.invalid():
+            raise InvalidColorException()
+
+    def invalid(self):
+        x = self.x
+        y = self.y
+        z = self.z
+        if x < 0.0 or x > 1.0 or y < 0.0 or y > 1.0 or z < 0.0 or z > 1.0:
+            return True
+        else:
+            return False
+
 def printHelp():
     print("""
 metrochrome.py - a command line tool for exploring color
