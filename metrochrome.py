@@ -393,6 +393,7 @@ def RGBhex_to_HSL(rgbHex):
     return RGB_to_HSL(rgb)
 
 def CMYK_to_RGB(cmyk):
+    """Converts CMYK color space to RGB"""
     cyanDiv = cmyk.cyan / 100.0
     magentaDiv = cmyk.magenta / 100.0
     yellowDiv = cmyk.yellow / 100.0
@@ -409,29 +410,36 @@ def CMYK_to_RGB(cmyk):
     return RGBColor(red, green, blue)
 
 def CMYK_to_RGBhex(cmyk):
+    """Converts CMYK color space to RGB (hexadecimal representation)"""
     rgb = CMYK_to_RGB(cmyk)
     return RGB_to_RGBhex(rgb)
 
 def CMYK_to_CMYKratio(cmyk):
+    """Converts CMYK color space to ratio representation"""
     return CMYKRatioColor(cmyk.cyan, cmyk.magenta, cmyk.yellow, cmyk.key)
 
 def CMYK_to_HSV(cmyk):
+    """Converts CMYK color space to HSV"""
     rgb = CMYK_to_RGB(cmyk)
     return RGB_to_HSV(rgb)
 
 def CMYK_to_HSL(cmyk):
+    """Converts CMYK color space to HSL"""
     rgb = CMYK_to_RGB(cmyk)
     return RGB_to_HSL(rgb)
 
 def CMYKratio_to_RGB(cmykr):
+    """Converts CMYK color space (ratio representation) to RGB"""
     cmyk = CMYKratio_to_CMYK(cmykr)
     return CMYK_to_RGB(cmyk)
 
 def CMYKratio_to_RGBhex(cmykr):
+    """Converts CMYK color space (ratio representation) to RGB (hexadecimal representation)"""
     cmyk = CMYKratio_to_CMYK(cmykr)
     return CMYK_to_RGBhex(cmyk)
 
 def CMYKratio_to_CMYK(cmykr):
+    """Converts CMYK color space (ratio representation) to standard representation"""
     cyan = cmykr.cyan * 100.0
     magenta = cmykr.magenta * 100.0
     yellow = cmykr.yellow * 100.0
@@ -440,14 +448,17 @@ def CMYKratio_to_CMYK(cmykr):
     return CMYKColor(cyan, magenta, yellow, key)
 
 def CMYKratio_to_HSV(cmykr):
+    """Converts CMYK color space (ratio representation) to HSV"""
     rgb = CMYKratio_to_RGB(cmykr)
     return RGB_to_HSV(rgb)
 
 def CMYKratio_to_HSL(cmykr):
+    """Converts CMYK color space (ratio representation) to HSL"""
     rgb = CMYKratio_to_RGB(cmykr)
     return RGB_to_HSL(rgb)
 
 def HSV_to_RGB(hsv):
+    """Converts HSV color space to RGB"""
 
     hue = hsv.hue
     saturation = hsv.saturation
@@ -489,22 +500,27 @@ def HSV_to_RGB(hsv):
     return RGBColor(red, green, blue)
 
 def HSV_to_RGBhex(hsv):
+    """Converts HSV color space to RGB (hexadecimal representation)"""
     rgb = HSV_to_RGB(hsv)
     return RGB_to_RGBhex(rgb)
 
 def HSV_to_CMYK(hsv):
+    """Converts HSV color space to CMYK"""
     rgb = HSV_to_RGB(hsv)
     return RGB_to_CMYK(rgb)
 
 def HSV_to_CMYKratio(hsv):
+    """Converts HSV color space to CMYK (ratio representation)"""
     rgb = HSV_to_RGB(hsv)
     return RGB_to_CMYKratio(rgb)
 
 def HSV_to_HSL(hsv):
+    """Converts HSV color space to HSL"""
     rgb = HSV_to_RGB(hsv)
     return RGB_to_HSL(rgb)
 
 def HSL_to_RGB(hsl):
+    """Converts HSL color space to RGB"""
 
     hue = hsl.hue
     saturation = hsl.saturation
@@ -546,18 +562,22 @@ def HSL_to_RGB(hsl):
     return RGBColor(red, green, blue)
 
 def HSL_to_RGBhex(hsl):
+    """Converts HSL color space to RGB (hexadecimal representation)"""
     rgb = HSL_to_RGB(hsl)
     return RGB_to_RGBhex(rgb)
 
 def HSL_to_CMYK(hsl):
+    """Converts HSL color space to CMYK"""
     rgb = HSL_to_RGB(hsl)
     return RGB_to_CMYK(rgb)
 
 def HSL_to_CMYKratio(hsl):
+    """Converts HSL color space to CMYK (ratio representation)"""
     rgb = HSL_to_RGB(hsl)
     return RGB_to_CMYKratio(rgb)
 
 def HSL_to_HSV(hsl):
+    """Converts HSL color space to HSV"""
     rgb = HSL_to_RGB(hsl)
     return RGB_to_HSV(rgb)
 
