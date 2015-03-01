@@ -238,6 +238,56 @@ class CIEColor:
         else:
             return False
 
+class WavelengthColor:
+    """A color represented as physical wavelength"""
+    def __init__(self, nm):
+        self.nm = nm
+        if self.invalid():
+            raise InvalidColorException()
+
+    def __str__(self):
+        return "%.3f" % (self.nm)
+
+    def parseString(self, nm):
+        try:
+            self.nm = float(nm)
+        except:
+            raise InvalidColorException()
+        if self.invalid():
+            raise InvalidColorException()
+
+    def invalid(self):
+        nm = self.nm
+        if x < 380.0 or x > 780.0:
+            return True
+        else:
+            return False
+
+class DegreeKelvinColor:
+    """A color represented as a source of black body radiation at a given temperature"""
+    def __init__(self, dk):
+        self.dk = dk
+        if self.invalid():
+            raise InvalidColorException()
+
+    def __str__(self):
+        return "%.1f" % (self.dk)
+
+    def parseString(self, dk):
+        try:
+            self.dk = float(dk)
+        except:
+            raise InvalidColorException()
+        if self.invalid():
+            raise InvalidColorException()
+
+    def invalid(self):
+        dk = self.dk
+        if dk < 0.0:
+            return True
+        else:
+            return False
+
 def printHelp():
     print("""
 metrochrome.py - a command line tool for exploring color
