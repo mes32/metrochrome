@@ -11,9 +11,16 @@
 import sys
 
 class InvalidColorException(Exception):
-    """An exception that indicates inputs to a color class are out of range for that color space"""
+    """Exception indicates inputs to a color class are out of range for the color space"""
     def __init__(self):
         self.value = "Invalid color error"
+    def __str__(self):
+        return repr(self.value)
+
+class InexactColorConversionException(Exception):
+    """Exception indicates color conversion required approximation to map onto new color space"""
+    def __init__(self):
+        self.value = "Inexact color conversion exception"
     def __str__(self):
         return repr(self.value)
 
@@ -258,7 +265,7 @@ class WavelengthColor:
 
     def invalid(self):
         nm = self.nm
-        if x < 380.0 or x > 780.0:
+        if nm < 380.0 or nm > 780.0:
             return True
         else:
             return False
@@ -411,6 +418,15 @@ def RGB_to_HSL(rgb):
     hue *= 60.0
 
     return HSLColor(hue, saturation, lightness)
+
+def RGB_to_CIE(rgb):
+    return CIEColor(0.0, 0.0, 0.0)
+
+def RGB_to_wavelength(rgb):
+    return WavelengthColor(380.0)
+
+def RGB_to_degreeKelvin(rgb):
+    return DegreeKelvinColor(0.0)
  
 def RGBhex_to_RGB(rgbHex):
     """Converts RGB hexadecimal representation to standard RGB"""
@@ -655,6 +671,13 @@ def main():
             print(RGB_to_HSV(rgb))
         elif sys.argv[5] == "-hsl":
             print(RGB_to_HSL(rgb))
+        elif sys.argv[5] == "-cie":
+            print(RGB_to_CIE(rgb))
+        elif sys.argv[5] == "-wave":
+            print(RGB_to_wavelength(rgb))
+        elif sys.argv[5] == "-kelvin":
+            print(RGB_to_degreeKelvin(rgb))
+
         else:
             exitWithError()
 
