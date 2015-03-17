@@ -458,6 +458,11 @@ def RGBhex_to_HSL(rgbHex):
     rgb = RGBhex_to_RGB(rgbHex)
     return RGB_to_HSL(rgb)
 
+def RGBhex_to_CIE(rgbHex):
+    """Converts RGB color space (hexadecimal representation) to CIE"""
+    rgb = RGBhex_to_RGB(rgbHex)
+    return RGB_to_CIE(rgb)
+
 def CMYK_to_RGB(cmyk):
     """Converts CMYK color space to RGB"""
     cyanDiv = cmyk.cyan / 100.0
@@ -494,6 +499,11 @@ def CMYK_to_HSL(cmyk):
     rgb = CMYK_to_RGB(cmyk)
     return RGB_to_HSL(rgb)
 
+def CMYK_to_CIE(cmyk):
+    """Converts CMYK color space to HSL"""
+    rgb = CMYK_to_RGB(cmyk)
+    return RGB_to_CIE(rgb)
+
 def CMYKratio_to_RGB(cmykr):
     """Converts CMYK color space (ratio representation) to RGB"""
     cmyk = CMYKratio_to_CMYK(cmykr)
@@ -522,6 +532,11 @@ def CMYKratio_to_HSL(cmykr):
     """Converts CMYK color space (ratio representation) to HSL"""
     rgb = CMYKratio_to_RGB(cmykr)
     return RGB_to_HSL(rgb)
+
+def CMYKratio_to_CIE(cmykr):
+    """Converts CMYK color space (ratio representation) to CIE"""
+    rgb = CMYKratio_to_RGB(cmykr)
+    return RGB_to_CIE(rgb)
 
 def HSV_to_RGB(hsv):
     """Converts HSV color space to RGB"""
@@ -585,6 +600,11 @@ def HSV_to_HSL(hsv):
     rgb = HSV_to_RGB(hsv)
     return RGB_to_HSL(rgb)
 
+def HSV_to_CIE(hsv):
+    """Converts HSV color space to CIE"""
+    rgb = HSV_to_RGB(hsv)
+    return RGB_to_CIE(rgb)
+
 def HSL_to_RGB(hsl):
     """Converts HSL color space to RGB"""
 
@@ -647,6 +667,40 @@ def HSL_to_HSV(hsl):
     rgb = HSL_to_RGB(hsl)
     return RGB_to_HSV(rgb)
 
+def HSL_to_CIE(hsl):
+    """Converts HSL color space to CIE"""
+    rgb = HSL_to_RGB(hsl)
+    return RGB_to_CIE(rgb)
+
+def CIE_to_RGB(cie):
+    """Converts CIE color space to RGB"""
+    return RGBColor(0, 0, 0)
+
+def CIE_to_RGBhex(cie):
+    """Converts CIE color space to RGB (hexadecimal representation)"""
+    rgb = CIE_to_RGB(cie)
+    return RGB_to_RGBhex(rgb)
+
+def CIE_to_CMYK(cie):
+    """Converts HSL color space to CMYK"""
+    rgb = CIE_to_RGB(cie)
+    return RGB_to_CMYK(rgb)
+
+def CIE_to_CMYKratio(cie):
+    """Converts CIE color space to CMYK (ratio representation)"""
+    rgb = CIE_to_RGB(cie)
+    return RGB_to_CMYKratio(rgb)
+
+def CIE_to_HSV(cie):
+    """Converts CIE color space to HSV"""
+    rgb = CIE_to_RGB(cie)
+    return RGB_to_HSV(rgb)
+
+def CIE_to_HSL(cie):
+    """Converts CIE color space to HSL"""
+    rgb = CIE_to_RGB(cie)
+    return RGB_to_HSL(rgb)
+
 def main():
 
     if len(sys.argv) == 2 and (sys.argv[1] == "-h" or sys.argv[1] == "-help"):
@@ -700,6 +754,8 @@ def main():
             print(RGBhex_to_HSV(rgbHex))
         elif sys.argv[3] == "-hsl":
             print(RGBhex_to_HSL(rgbHex))
+        elif sys.argv[3] == "-cie":
+            print(RGBhex_to_CIE(rgbHex))
         else:
             exitWithError()
 
@@ -722,6 +778,8 @@ def main():
             print(CMYK_to_HSV(cmyk))
         elif sys.argv[6] == "-hsl":
             print(CMYK_to_HSL(cmyk))
+        elif sys.argv[6] == "-cie":
+            print(CMYK_to_CIE(cmyk))
         else:
             exitWithError()
 
@@ -744,6 +802,8 @@ def main():
             print(CMYKratio_to_HSV(cmykr))
         elif sys.argv[6] == "-hsl":
             print(CMYKratio_to_HSL(cmykr))
+        elif sys.argv[6] == "-cie":
+            print(CMYKratio_to_CIE(cmykr))
         else:
             exitWithError()
 
@@ -766,6 +826,8 @@ def main():
             print(hsv)
         elif sys.argv[5] == "-hsl":
             print(HSV_to_HSL(hsv))
+        elif sys.argv[5] == "-cie":
+            print(HSV_to_CIE(hsv))
         else:
             exitWithError()
 
@@ -788,6 +850,32 @@ def main():
             print(HSL_to_HSV(hsl))
         elif sys.argv[5] == "-hsl":
             print(hsl)
+        elif sys.argv[5] == "-cie":
+            print(HSL_to_CIE(hsl))
+        else:
+            exitWithError()
+
+    elif len(sys.argv) == 6 and sys.argv[1] == "-cie":
+        try:
+            cie = CIEColor(0,0,0)
+            cie.parseString(sys.argv[2], sys.argv[3], sys.argv[4])
+        except InvalidColorException:
+            exitWithError()
+
+        if sys.argv[5] == "-rgb":
+            print(CIE_to_RGB(cie))
+        elif sys.argv[5] == "-rgbh":
+            print(CIE_to_RGBhex(cie))
+        elif sys.argv[5] == "-cmyk":
+            print(CIE_to_CMYK(cie))
+        elif sys.argv[5] == "-cmykr":
+            print(CIE_to_CMYKratio(cie))
+        elif sys.argv[5] == "-hsv":
+            print(CIE_to_HSV(cie))
+        elif sys.argv[5] == "-hsl":
+            print(CIE_to_HSL(cie))
+        elif sys.argv[5] == "-cie":
+            print(cie)
         else:
             exitWithError()
 
