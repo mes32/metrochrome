@@ -423,6 +423,7 @@ def RGB_to_CIE(rgb):
     return CIEColor(0.0, 0.0, 0.0)
 
 def RGB_to_wavelength(rgb):
+    """Converts RGB color space to wavelength in nm"""
     return WavelengthColor(380.0)
 
 def RGB_to_degreeKelvin(rgb):
@@ -462,6 +463,11 @@ def RGBhex_to_CIE(rgbHex):
     """Converts RGB color space (hexadecimal representation) to CIE"""
     rgb = RGBhex_to_RGB(rgbHex)
     return RGB_to_CIE(rgb)
+
+def RGBhex_to_wavelength(rgbHex):
+    """Converts RGB color space (hexadecimal representation) to wavelength in nm"""
+    rgb = RGBhex_to_RGB(rgbHex)
+    return RGB_to_wavelength(rgb)
 
 def CMYK_to_RGB(cmyk):
     """Converts CMYK color space to RGB"""
@@ -504,6 +510,11 @@ def CMYK_to_CIE(cmyk):
     rgb = CMYK_to_RGB(cmyk)
     return RGB_to_CIE(rgb)
 
+def CMYK_to_wavelength(cmyk):
+    """Converts CMYK color space to wavelength in nm"""
+    rgb = CMYK_to_RGB(cmyk)
+    return RGB_to_wavelength(rgb)
+
 def CMYKratio_to_RGB(cmykr):
     """Converts CMYK color space (ratio representation) to RGB"""
     cmyk = CMYKratio_to_CMYK(cmykr)
@@ -537,6 +548,11 @@ def CMYKratio_to_CIE(cmykr):
     """Converts CMYK color space (ratio representation) to CIE"""
     rgb = CMYKratio_to_RGB(cmykr)
     return RGB_to_CIE(rgb)
+
+def CMYK_to_wavelength(cmyk):
+    """Converts CMYK color space (ratio representation) to wavelength in nm"""
+    rgb = CMYKratio_to_RGB(cmykr)
+    return RGB_to_wavelength(rgb)
 
 def HSV_to_RGB(hsv):
     """Converts HSV color space to RGB"""
@@ -605,6 +621,11 @@ def HSV_to_CIE(hsv):
     rgb = HSV_to_RGB(hsv)
     return RGB_to_CIE(rgb)
 
+def HSV_to_wavelength(hsv):
+    """Converts HSV color space to wavelength in nm"""
+    rgb = HSV_to_RGB(hsv)
+    return RGB_to_wavelength(rgb)
+
 def HSL_to_RGB(hsl):
     """Converts HSL color space to RGB"""
 
@@ -672,6 +693,11 @@ def HSL_to_CIE(hsl):
     rgb = HSL_to_RGB(hsl)
     return RGB_to_CIE(rgb)
 
+def HSL_to_wavelength(hsl):
+    """Converts HSV color space to wavelength in nm"""
+    rgb = HSL_to_RGB(hsl)
+    return RGB_to_wavelength(rgb)
+
 def CIE_to_RGB(cie):
     """Converts CIE color space to RGB"""
     return RGBColor(0, 0, 0)
@@ -700,6 +726,11 @@ def CIE_to_HSL(cie):
     """Converts CIE color space to HSL"""
     rgb = CIE_to_RGB(cie)
     return RGB_to_HSL(rgb)
+
+def CIE_to_wavelength(cie):
+    """Converts CIE color space to wavelength in nm"""
+    rgb = CIE_to_RGB(cie)
+    return RGB_to_wavelength(rgb)
 
 def main():
 
